@@ -1,3 +1,16 @@
+/*
+ * "Arduino UNO R3"
+ *  for Arduino (with LOGO) MEGA328P ATMEGA16U2 1PCS UNO R3
+ * https://www.aliexpress.com/item/high-quality-One-set-UNO-R3-MEGA328P-CH340G-For-Arduino-UNO-R3-Original-Chip-16Mhz/32833268761.html?spm=a2g0s.9042311.0.0.uTQlZi
+ * 
+ * "DS18B20 Temperature"
+ * Digital DS18B20 Temperature Measurement Module Detection Sensor Board for Arduino DC 5V Dupont Wire 18B20 Digital Signal
+ * https://www.aliexpress.com/item/Digital-DS18B20-Temperature-Module-Detection-Sensor-Borad-for-Arduino-DC-5V-With-Dupont-Wire/32770146947.html?spm=a2g0s.9042311.0.0.uTQlZi
+ * 
+ * Need to download 'OneWire' && 'DallasTemperature'
+ *   from Sketch/Include Library/Manage Libraries...
+ */
+
 //#### DigitalLed ####
 
 class DigitalLed {

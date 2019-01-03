@@ -30,15 +30,13 @@ TemperatureSensor *temperatureSensor = NULL;
 
 void setup() {
   logger.setup(9600);
-  temperatureSensor = new TemperatureSensor(2);
+  temperatureSensor = new TemperatureSensor(D2);
 }
 
 //#### LOOP ####
 
 void loop() {
   delay(500);
-
-  logger.logLine("Ping");
   
   float temperature = 0;
   bool error = false;

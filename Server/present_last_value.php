@@ -33,7 +33,9 @@ if ($result->num_rows > 0) {
     while($row = $result->fetch_assoc()) {
     	echo "<tr>";
 		echo "<td>".$row["value"]." °C</td>";
-		echo "<td>".$row["date"]."</td>";
+		$dt = new DateTime($row["date"], new DateTimeZone('UTC'));
+		$dt->setTimezone(date_default_timezone_get());
+		echo "<td>".$dt->format('Y-m-d H:i:s')."</td>";
         echo "</tr>";
     }
 } else {

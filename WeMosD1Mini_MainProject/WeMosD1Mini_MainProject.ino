@@ -17,33 +17,55 @@
 
 #include "SerialConnection.h"
 #include "TemperatureSensor.h"
-
-
-#include <ESP8266HTTPClient.h>
+#include "WiFiConnection.h"
+#include "HTTPConnection.h"
+#include "Arduino.h"
 
 //#### GLOBALS ####
 
 SerialConnection logger;
 TemperatureSensor *temperatureSensor = NULL;
+WiFiConnection wifi;
 
 //#### SETUP ####
 
 void setup() {
   logger.setup(9600);
   temperatureSensor = new TemperatureSensor(D2);
+  for(uint8_t t = 4; t > 0; t--) {
+    logger.logLine(String("[SETUP] WAIT ") + String(t, DEC));  
+    delay(1000);
+  }
+  wifi.setup("SSID", "PW");
 }
 
 //#### LOOP ####
 
 void loop() {
-  delay(500);
-  
   float temperature = 0;
   bool error = false;
   temperatureSensor->readNewValue(temperature, error);
-  if (!error) {
-    logger.logLine(String("Temperature is: ") + String(temperature) + String(" C"));  
-  } else {
+  if (error) {
     logger.logLine("ERROR: Can not read Temperature!");
+    return;
+  } else {
+    logger.logLine(String("Temperature is: ") + String(temperature) + String(" C"));  
   }
+
+  if (wifi.isConnected()) {
+    HTTPConnection connection;
+    String path = "/register_value.php?type=temperature&unit=C&value=";
+    path += String(temperature);
+    connection.connect("YOUR_HOST", 80, path);
+
+    String response = connection.readResponse();
+    if (response.indexOf("OK") != -1) {
+      logger.logLine("Server response: is expected :-)");  
+    } else {
+      logger.logLine(String("[ERROR] Server response: '") + response + String("'"));
+    }
+  } else {
+    logger.logLine("Try to connect to WiFi AP");
+  }
+  delay(3000);
 }

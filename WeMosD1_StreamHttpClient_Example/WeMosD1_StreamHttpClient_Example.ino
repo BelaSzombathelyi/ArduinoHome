@@ -44,8 +44,8 @@ void loop() {
         USE_SERIAL.print("[HTTP] begin...\n");
 
         // configure server and url
-        http.begin("www.google.com", 80);
-        //http.begin("192.168.1.12", 80, "/test.html");
+        //http.begin("www.google.hu", 80, "/index.html?temperature=22.999");
+        http.begin("192.168.1.169", 8888, "/register_value.html?type=temperature&value=22.999&unit=C");
 
         USE_SERIAL.print("[HTTP] GET...\n");
         // start connection and send HTTP header

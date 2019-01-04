@@ -34,7 +34,8 @@ if ($result->num_rows > 0) {
     	echo "<tr>";
 		echo "<td>".$row["value"]." °C</td>";
 		$dt = new DateTime($row["date"], new DateTimeZone('UTC'));
-		$dt->setTimezone(date_default_timezone_get());
+		$timeZone = new DateTimeZone("Europe/Budapest");
+		$dt->setTimezone($timeZone);
 		echo "<td>".$dt->format('Y-m-d H:i:s')."</td>";
         echo "</tr>";
     }

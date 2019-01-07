@@ -26,6 +26,7 @@ $connection = createConnection($config);
 <?php
 			$sql = file_get_contents('recorded_values_30min.sql');
 			$sql = 'SELECT * FROM ('.$sql.') AS `D` LIMIT 72';
+			$sql = 'SELECT * FROM ('.$sql.') AS `E` ORDER BY `BY30` ASC';
 			$result = $connection->query($sql);
 			if ($result->num_rows > 0) {
     			while($row = $result->fetch_assoc()) {
@@ -38,7 +39,22 @@ $connection = createConnection($config);
         var options = {
           title: 'Hőmérséklet',
           curveType: 'function',
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          series: {
+          	2: {
+          		color: '#FF6666',
+          		lineWidth: 1,
+          	},
+          	1: {
+          		color: '#000000',
+          		lineWidth: 2,
+          	},
+          	0: {
+          		color: '#3399FF',
+          		lineWidth: 1,
+          	}
+          },
+
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));

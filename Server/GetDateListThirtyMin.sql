@@ -1,5 +1,5 @@
 DELIMITER $$
-CREATE DEFINER=`root`@`localhost` PROCEDURE `GetDateListThirtyMin`()
+CREATE DEFINER=`id8378391_test_user`@`%` PROCEDURE `GetDateListThirtyMin`()
 BEGIN
 	SET @current = CURRENT_TIMESTAMP;
 	SET @minutes = MINUTE(@current);

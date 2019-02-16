@@ -11,59 +11,69 @@ $connection = createConnection($config);
 <head>
 	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-		function reloadPage() {
-  			location.reload();
-		}
-		function startTimer() {
-  			window.setTimeout(reloadPage, 2000);
-		}
-		google.charts.load('current', {'packages':['corechart']});
-      	google.charts.setOnLoadCallback(drawChart);
+		
+    var request = new XMLHttpRequest();
+    request.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        var calculatedData = JSON.parse(this.responseText);
+        loadChart(calculatedData);
+      }
+    };
+    request.open("GET", "get_data.php", true);
+    request.send();
+		
+    function loadChart(calculatedData) {
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
 
-      	function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-        	['Dátum', 'Minimum', 'Átlag', 'Maximum'],
-<?php
-			$sql = file_get_contents('recorded_values_30min.sql');
-			$sql = 'SELECT * FROM ('.$sql.') AS `D` LIMIT 72';
-			$sql = 'SELECT * FROM ('.$sql.') AS `E` ORDER BY `BY30` ASC';
-			$result = $connection->query($sql);
-			if ($result->num_rows > 0) {
-    			while($row = $result->fetch_assoc()) {
-    				echo "['".$row["BY30"]."', ".$row["MIN"].", ".$row["AVG"].", ".$row["MAX"]."],\n";
-    			}
-			}
-?> 
-        ]);
+      function drawChart() {
+        var dataTable = [['Időszak', 'Minimum', 'Átlag', 'Maximum']];
+        calculatedData.reverse().forEach(function(item) {
+          var min = item.MIN;
+          var avg = item.AVG;
+          var max = item.MAX;
+          if (min !== null && avg !== null && max !== null) {
+            var min = Number.parseFloat(min);
+            var avg = Number.parseFloat(avg);
+            var max = Number.parseFloat(max);
+            dataTable.push([item.interval, min, avg, max]);
+          } else {
+            dataTable.push([item.interval, null, null, null]);
+          }
+        });
+
+        var data = google.visualization.arrayToDataTable(dataTable);
 
         var options = {
           title: 'Hőmérséklet',
           curveType: 'function',
           legend: { position: 'bottom' },
           series: {
-          	2: {
-          		color: '#FF6666',
-          		lineWidth: 1,
-          	},
-          	1: {
-          		color: '#000000',
-          		lineWidth: 2,
-          	},
-          	0: {
-          		color: '#3399FF',
-          		lineWidth: 1,
-          	}
+            2: {
+              color: '#FF6666',
+              lineWidth: 1,
+            },
+            1: {
+              color: '#000000',
+              lineWidth: 2,
+            },
+            0: {
+              color: '#3399FF',
+              lineWidth: 1,
+            }
           },
 
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
-
         chart.draw(data, options);
       }
+    }
+
+		
 	</script>
 </head>
-<body onload="startTimer()">
+<body">
     <div id="curve_chart" style="width: 900px; height: 500px"></div>
 
 <?php
